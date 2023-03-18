@@ -32,22 +32,13 @@ const server = new ApolloServer({
   },
 });
 
-const whitelist = [process.env.FRONTEND_URL];
-const corsOptions = {
-  origin: (origin, callback) => {
-    console.log(origin);
-    // Verificar si la peticion proviene de un servidor de la lista
-    const verify = whitelist.some((dominio) => dominio === origin);
-    if (verify) {
-      callback(null, true);
-    } else {
-      callback(new Error('No permitido por CORS'));
-    }
+exports.handler = server.createHandler({
+  cors: {
+    origin: '*',
+    credentials: true,
   },
-};
+});
 
-// Habilitar cors
-app.use(cors(corsOptions));
 // Arrancar el servidor
 server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
   console.log(`Servidor listo en la URL ${url}`);
